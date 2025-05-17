@@ -44,7 +44,7 @@ CREATE TABLE `appointments` (
 
 LOCK TABLES `appointments` WRITE;
 /*!40000 ALTER TABLE `appointments` DISABLE KEYS */;
-INSERT INTO `appointments` VALUES (8,1,13,'2025-05-08','Behind jain basti, Near Param Computers, Mangalvar peth','Som Revankar',1),(9,2,13,'2025-05-09','Behind jain basti, Near Param Computers, Mangalvar peth','Som Revankar',1),(10,2,13,'2025-05-09','Behind jain basti, Near Param Computers, Mangalvar peth','Som Revankar',1),(11,2,13,'2025-05-09','gaffar market','neyax wills',0);
+INSERT INTO `appointments` VALUES (8,1,13,'2025-05-08','123 Demo St, Sample City','Test User A',1),(9,2,13,'2025-05-09','123 Demo St, Sample City','Test User B',1),(10,2,13,'2025-05-09','123 Demo St, Sample City','Test User B',1),(11,2,13,'2025-05-09','456 Example Rd, Exampletown','Test User C',0);
 /*!40000 ALTER TABLE `appointments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -102,7 +102,7 @@ CREATE TABLE `blood_bank` (
 
 LOCK TABLES `blood_bank` WRITE;
 /*!40000 ALTER TABLE `blood_bank` DISABLE KEYS */;
-INSERT INTO `blood_bank` VALUES (1,'Sangli Blood Bank','Sangli City','9876543210','9 AM - 6 PM',16.85240000,74.58150000),(2,'Miraj Blood Bank','Miraj','8765432109','8 AM - 5 PM',16.83380000,74.64100000),(3,'Kupwad Blood Bank','Kupwad MIDC','7654321098','10 AM - 7 PM',16.83710000,74.61440000),(4,'Sahyadri Blood Bank','62/1, 1st Floor, Near Shivajinagar Bus Depot, Shivaji Nagar, Pune, Maharashtra, India','020-25457368','9:00 AM - 6:00 PM',18.52040000,73.85670000),(5,'Poona Blood Bank','2nd Floor, Near OPP. Nehru Stadium, Camp, Pune, Maharashtra, India','020-26139600','8:00 AM - 5:00 PM',18.51060000,73.86330000),(6,'KEM Hospital Blood Bank','1, Rasta Peth, Pune, Maharashtra, India','020-26353344','10:00 AM - 7:00 PM',18.52160000,73.86820000),(7,'Bharati Hospital Blood Bank','Bharati Vidyapeeth University, Pune-Satara Road, Pune, Maharashtra, India','020-24370151','9:00 AM - 5:00 PM',18.46720000,73.85290000),(8,'Ruby Hall Clinic Blood Bank','40, Sassoon Road, Pune, Maharashtra, India','020-26116020','24/7',18.52360000,73.85350000);
+INSERT INTO `blood_bank` VALUES (1,'Sangli Blood Bank','Sangli City','2225558888','9 AM - 6 PM',16.85240000,74.58150000),(2,'Miraj Blood Bank','Miraj','8899556644','8 AM - 5 PM',16.83380000,74.64100000),(3,'Kupwad Blood Bank','Kupwad MIDC','899999999','10 AM - 7 PM',16.83710000,74.61440000),(4,'Sahyadri Blood Bank','62/1, 1st Floor, Near Shivajinagar Bus Depot, Shivaji Nagar, Pune, Maharashtra, India','020-25457368','9:00 AM - 6:00 PM',18.52040000,73.85670000),(5,'Poona Blood Bank','2nd Floor, Near OPP. Nehru Stadium, Camp, Pune, Maharashtra, India','020-26139600','8:00 AM - 5:00 PM',18.51060000,73.86330000),(6,'KEM Hospital Blood Bank','1, Rasta Peth, Pune, Maharashtra, India','020-26353344','10:00 AM - 7:00 PM',18.52160000,73.86820000),(7,'Bharati Hospital Blood Bank','Bharati Vidyapeeth University, Pune-Satara Road, Pune, Maharashtra, India','020-24370151','9:00 AM - 5:00 PM',18.46720000,73.85290000),(8,'Ruby Hall Clinic Blood Bank','40, Sassoon Road, Pune, Maharashtra, India','020-26116020','24/7',18.52360000,73.85350000);
 /*!40000 ALTER TABLE `blood_bank` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -218,7 +218,7 @@ CREATE TABLE `doctors` (
 
 LOCK TABLES `doctors` WRITE;
 /*!40000 ALTER TABLE `doctors` DISABLE KEYS */;
-INSERT INTO `doctors` VALUES (1,'Dr. John Doe','Cardiologist','1234567890','Expert in heart diseases.',4.5),(2,'Dr. Jane Smith','Pediatrician','0987654321','Specializes in children\'s health.',3.8),(3,'Dr. Emily Davis','Dermatologist','1122334455','Skin care and treatment specialist.',4),(4,'Dr. Michael Brown','Orthopedic','2233445566','Expert in bone and joint disorders.',4.7),(5,'Dr. Sarah Wilson','Neurologist','3344556677','Specializes in brain and nervous system.',4.2);
+INSERT INTO `doctors` VALUES (1,'Dr. John Doe','Cardiologist','1234567890','Expert in heart diseases.',4.5),(2,'Dr. Jane Smith','Pediatrician','2254578952','Specializes in children\'s health.',3.8),(3,'Dr. Emily Davis','Dermatologist','1122334455','Skin care and treatment specialist.',4),(4,'Dr. Michael Brown','Orthopedic','2233445566','Expert in bone and joint disorders.',4.7),(5,'Dr. Sarah Wilson','Neurologist','3344556677','Specializes in brain and nervous system.',4.2);
 /*!40000 ALTER TABLE `doctors` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -251,7 +251,7 @@ CREATE TABLE `doctors_table` (
 
 LOCK TABLES `doctors_table` WRITE;
 /*!40000 ALTER TABLE `doctors_table` DISABLE KEYS */;
-INSERT INTO `doctors_table` VALUES (1,'Dr. John Doe','Cardiologist',4.5,1,0,200.00,'somrevankar1510@okaxis',0),(2,'Dr. Jane Smith','Dermatologist',4.0,1,0,200.00,'somrevankar1510@okaxis',0),(3,'Dr. Emily Jones','Pediatrician',4.2,1,0,200.00,'somrevankar1510@okaxis',0),(4,'Dr. John Gal','Cardiologist',4.5,2,1,200.00,'somrevankar1510@okaxis',0),(5,'Dr. Janny Smith','Dermatologist',4.0,2,0,200.00,'somrevankar1510@okaxis',0),(6,'Dr. Essa Jones','Pediatrician',4.2,2,0,200.00,'somrevankar1510@okaxis',0),(7,'Dr. Anil Deshmukh','Cardiologist',4.8,3,0,200.00,'somrevankar1510@okaxis',0),(8,'Dr. Priya Patil','Dermatologist',4.6,3,0,200.00,'somrevankar1510@okaxis',0),(9,'Dr. Sanjay Kulkarni','Pediatrician',4.5,3,0,200.00,'somrevankar1510@okaxis',0),(10,'Dr. Anil Deshmukh','Cardiologist',4.8,3,0,200.00,'somrevankar1510@okaxis',0),(11,'Dr. Priya Patil','Dermatologist',4.6,3,0,200.00,'somrevankar1510@okaxis',0),(12,'Dr. Sanjay Kulkarni','Pediatrician',4.5,3,0,200.00,'somrevankar1510@okaxis',0),(13,'Dr. Neha Joshi','General Surgeon',4.7,4,3,200.00,'somrevankar1510@okaxis',0),(14,'Dr. Rahul More','Orthopedic',4.6,4,0,200.00,'somrevankar1510@okaxis',0),(15,'Dr. Sheetal Patil','Gynecologist',4.9,4,0,200.00,'somrevankar1510@okaxis',0),(16,'Dr. Shweta Nair','General Surgeon',4.5,5,0,200.00,'somrevankar1510@okaxis',0),(17,'Dr. Amit Bhosle','Dermatologist',4.4,5,0,200.00,'somrevankar1510@okaxis',0),(18,'Dr. Neha Rao','Anesthesiologist',4.3,5,0,200.00,'somrevankar1510@okaxis',0);
+INSERT INTO `doctors_table` VALUES (1,'Dr. John Doe','Cardiologist',4.5,1,0,100.00,'demo@upi',0),(2,'Dr. Jane Smith','Dermatologist',4.0,1,0,100.00,'demo@upi',0),(3,'Dr. Emily Jones','Pediatrician',4.2,1,0,100.00,'demo@upi',0),(4,'Dr. John Gal','Cardiologist',4.5,2,1,100.00,'demo@upi',0),(5,'Dr. Janny Smith','Dermatologist',4.0,2,0,100.00,'demo@upi',0),(6,'Dr. Essa Jones','Pediatrician',4.2,2,0,100.00,'demo@upi',0),(7,'Dr. Anil Deshmukh','Cardiologist',4.8,3,0,100.00,'demo@upi',0),(8,'Dr. Priya Patil','Dermatologist',4.6,3,0,100.00,'demo@upi',0),(9,'Dr. Sanjay Kulkarni','Pediatrician',4.5,3,0,100.00,'demo@upi',0),(10,'Dr. Anil Deshmukh','Cardiologist',4.8,3,0,100.00,'demo@upi',0),(11,'Dr. Priya Patil','Dermatologist',4.6,3,0,100.00,'demo@upi',0),(12,'Dr. Sanjay Kulkarni','Pediatrician',4.5,3,0,100.00,'demo@upi',0),(13,'Dr. Neha Joshi','General Surgeon',4.7,4,3,100.00,'demo@upi',0),(14,'Dr. Rahul More','Orthopedic',4.6,4,0,100.00,'demo@upi',0),(15,'Dr. Sheetal Patil','Gynecologist',4.9,4,0,100.00,'demo@upi',0),(16,'Dr. Shweta Nair','General Surgeon',4.5,5,0,100.00,'demo@upi',0),(17,'Dr. Amit Bhosle','Dermatologist',4.4,5,0,100.00,'demo@upi',0),(18,'Dr. Neha Rao','Anesthesiologist',4.3,5,0,100.00,'demo@upi',0);
 /*!40000 ALTER TABLE `doctors_table` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -286,7 +286,7 @@ CREATE TABLE `drivers` (
 
 LOCK TABLES `drivers` WRITE;
 /*!40000 ALTER TABLE `drivers` DISABLE KEYS */;
-INSERT INTO `drivers` VALUES (1,'neyax wills','somrevankar1015@gmail.com','testwills','9823857079','1515-12-25','$2b$12$9.e/oKJgjFa9sB/XcmxzcOrBIdn11tqnrfOBbWVTxCDDchpRtj4D2',0.0000000,0.0000000,1),(2,'Som Revankar','somrevankar1510@gmail.com','administrator','09823857079','2002-12-15','$2b$12$jhLMDwno/At3xdEQrOV4OONDtqHahKybQRYcbL8s9RKyhDtG4C1Ka',19.0840832,74.7896832,1),(3,'Chandrashekhar Revankar','somrevankar@gmail.com','admin','09637085923','2002-12-15','$2b$12$X4z0XPQbAYQg1mWYoZE89OpKdlCQVrIK7c1zxXvSgzW8bUuHoN3xO',16.9399632,74.4173823,0);
+INSERT INTO `drivers` VALUES (1,'neyax wills','abcd@gmail.com','testwills','5124655154','1515-12-25','$2b$12$9.e/oKJgjFa9sB/XcmxzcOrBIdn11tqnrfOBbWVTxCDDchpRtj4D2',0.0000000,0.0000000,1),(2,'abgd','abg1510@gmail.com','administrator','5551115544','2002-12-15','$2b$12$jhLMDwno/At3xdEQrOV4OONDtqHahKybQRYcbL8s9RKyhDtG4C1Ka',19.0840832,74.7896832,1),(3,'bhad','bhad@gmail.com','admin','5665452882','2002-12-15','$2b$12$X4z0XPQbAYQg1mWYoZE89OpKdlCQVrIK7c1zxXvSgzW8bUuHoN3xO',16.9399632,74.4173823,0);
 /*!40000 ALTER TABLE `drivers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -319,7 +319,7 @@ CREATE TABLE `hospital_users` (
 
 LOCK TABLES `hospital_users` WRITE;
 /*!40000 ALTER TABLE `hospital_users` DISABLE KEYS */;
-INSERT INTO `hospital_users` VALUES (1,'Avantika','ava@gmail.com','a','8010969392','2025-05-01','scrypt:32768:8:1$ZHNXToZuzEEOicnq$e81a5f7f06f4bf6f0f20598323bafb5b9c7466974741e46616a42885961fbb7f35639d18f5d2b1590671f5aa0a08447da59d95695cac5027adc0e656fb0e7195',NULL),(3,'Avantika Mukund Patil','avantikapatil008@gmail.com','avantika','08010969392','2025-05-01','avantika',NULL);
+INSERT INTO `hospital_users` VALUES (1,'avt','ava@gmail.com','a','8010969392','2025-05-01','scrypt:32768:8:1$ZHNXToZuzEEOicnq$e81a5f7f06f4bf6f0f20598323bafb5b9c7466974741e46616a42885961fbb7f35639d18f5d2b1590671f5aa0a08447da59d95695cac5027adc0e656fb0e7195',NULL),(3,'avta','avta008@gmail.com','avantika','08010969392','2025-05-01','avita',NULL);
 /*!40000 ALTER TABLE `hospital_users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -539,7 +539,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'Som Revankar','somrevankar1510@gmail.com','somcr1510','09823857079','2002-10-15','$2b$12$kMbL6F2JWIUuZYjpZz48Tud1.jbKNlhyCZ/himKmKLQu4VfSoSpRK'),(2,'neyax wills','wiliti7184@ckuer.com','wiliti','+12018577757','2020-06-11','$2b$12$RM/2iX7pSyRs9xMBwACkg.H1rQMRFgSRnCIRmNP.O1xTSuJ18b.ua'),(3,'neyax wills','testwills@gmail.com','testwills','9823857079','2002-12-11','$2b$12$0B2yhC/9dO1Yvn1MVLX3yuU34gCAedsvK2uI.8E96VUEETimv.GEi');
+INSERT INTO `users` VALUES (1,'abc','abc1510@gmail.com','abc1234','02222222222','2002-10-15','$2b$12$kMbL6F2JWIUuZYjpZz48Tud1.jbKNlhyCZ/himKmKLQu4VfSoSpRK'),(2,'neyax wills','wiliti7184@ckuer.com','wiliti','+12018577757','2020-06-11','$2b$12$RM/2iX7pSyRs9xMBwACkg.H1rQMRFgSRnCIRmNP.O1xTSuJ18b.ua'),(3,'neyax wills','testwills@gmail.com','testwills','02222222444','2002-12-11','$2b$12$0B2yhC/9dO1Yvn1MVLX3yuU34gCAedsvK2uI.8E96VUEETimv.GEi');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -552,4 +552,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-05-17 13:26:32
+-- Dump completed on 2025-05-17 13:51:30
