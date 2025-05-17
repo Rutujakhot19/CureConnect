@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/register.css') }}">
+    <script>
+        function validateForm() {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const username = document.getElementById('username').value;
+            const phone = document.getElementById('phone').value;
+            const dob = document.getElementById('dob').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+
+            // Check all fields are filled
+            if (!name || !email || !username || !phone || !dob || !password || !confirmPassword) {
+                alert('Please fill in all fields.');
+                return false;
+            }
+
+            // Validate email format
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(email)) {
+                alert('Please enter a valid email address.');
+                return false;
+            }
+
+            // Validate passwords match
+            if (password !== confirmPassword) {
+                alert('Passwords do not match. Please try again.');
+                return false;
+            }
+
+            // You can add more client-side validation here (optional)
+
+            return true; 
+        }
+    </script>
+</head>
+<body>
+    <div class="register-container">
+        <div class="register-box">
+            <div class="register-left">
+                <img src="{{ url_for('static', filename='images/icon.png') }}" alt="Logo" class="logo">
+                <h3>Register</h3>
+                <p>Join us today and manage your profile easily!</p>
+            </div>
+            <div class="register-right">
+                {% if error %}
+                    <div class="alert alert-danger">{{ error }}</div> 
+                {% endif %}
+                <form id="register-form" method="POST" action="/register" onsubmit="return validateForm()">
+                    <div class="input-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" name="name" placeholder="Full Name" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" placeholder="Email" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" name="username" placeholder="Username" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" placeholder="Phone Number" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="dob">Date of Birth</label>
+                        <input type="date" id="dob" name="dob" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" placeholder="Password" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="confirm-password">Confirm Password</label>
+                        <input type="password" id="confirm-password" placeholder="Confirm Password" required>
+                    </div>
+                    <button type="submit" class="register-button">Register</button>
+                </form>
+                <p class="login-info">
+                    Already have an account? <a href="{{ url_for('login') }}">Log In</a>
+                </p>
+                <p class="version-info">Version: 7.8.4 · © CareConnect, Inc.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

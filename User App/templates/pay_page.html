@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Booking</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/pay_page.css') }}">
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const doctorInfo = "{{ doctor_info }}"; // For debugging purposes
+            console.log("Doctor Info:", doctorInfo);
+        });
+    </script>
+</head>
+<body>
+
+<div class="container">
+    <div class="profile-icon">👨‍⚕️</div>
+    <div class="details">
+        <p><strong>Doctor Name: {{ doctor_info[0] }}</strong></p>
+        <p>Hospital Name: {{ doctor_info[1] }}</p>
+        <p>City: {{ doctor_info[2] }}</p>
+        <p>Rating: ⭐ {{ doctor_info[3] }}/5</p>
+    </div>
+    
+    <div class="appointment-details">
+        <p>Appointment Date: {{ appointment_date }}</p>
+    </div>
+    
+    <div class="qr-code">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa={{doctor_info[5] }}%26am={{"%.2f"|format(doctor_info[4])}}%26cu=INR" alt="QR Code" style="width: 100%; height: auto; border-radius: 5px;">
+    </div>
+    
+    <form method="get">
+        <button type="submit" class="book-button">Pay and Book</button>
+    </form>
+</div>
+
+</body>
+</html>

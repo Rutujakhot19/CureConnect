@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receive</title>
+    <link rel="stylesheet" href="../static/CSS/blood_receive_location.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <img src="../static/images/solidarity-5030921_1280.png" alt="Header Image">
+            <h1>Blood Bank</h1>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1>{{ blood_bank.name }}</h1>
+        <p>Available Blood Groups:</p>
+        <ul>
+            {% for group in blood_bank.available_blood_groups %}
+                <li>{{ group }}</li>
+            {% endfor %}
+        </ul>
+        <h2>Location: {{ blood_bank.location }}</h2>
+        <h3>Phone No.: {{ blood_bank.phone_number }}</h3>
+    </div>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital List</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/hospital_list.css') }}">
+</head>
+
+<body>
+    <!-- Header Section -->
+    <header>
+        <img src="{{ url_for('static', filename='images/hoss.png') }}" alt="Image description" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-left: 20px;">
+        <div class="header-title" style="margin-left: 10px;">Hospital List</div>
+    </header>
+
+    <!-- Search for hospital -->
+    <div class="search-container">
+        <input type="text" id="searchBar" placeholder="Search for a hospital...">
+    </div>
+
+    <!-- Hospitals List -->
+    <div class="hospitals-list-container" id="hospitalsList">
+        {% for hospital in hospitals %}
+            <a href="{{ url_for('doctor_list', hospital_id=hospital[0]) }}" class="hospital-card" 
+               data-rating="{{ hospital[3] }}" 
+               data-latitude="{{ hospital[4] }}" 
+               data-longitude="{{ hospital[5] }}">
+                <h3>{{ hospital[1] }}</h3>
+                <p>City: {{ hospital[2] }}</p>
+                <p>Rating: {% for _ in range(hospital[3]|round(0)) %}⭐{% endfor %}</p>
+            </a>
+        {% endfor %}
+    </div>
+
+    <script>
+        let userLatitude, userLongitude;
+    
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                userLatitude = position.coords.latitude;
+                userLongitude = position.coords.longitude;
+                console.log(`User Location: ${userLatitude}, ${userLongitude}`); 
+                filterHospitalsByLocation();
+            }, function() {
+                console.error('Geolocation permission denied.');
+            });
+        } else {
+            console.error('Geolocation is not supported by this browser.');
+        }
+    
+        function filterHospitalsByLocation() {
+            const hospitals = document.querySelectorAll('.hospital-card');
+            console.log(`Hospitals count: ${hospitals.length}`); // Debug log
+            hospitals.forEach(hospital => {
+                const hospitalLatitude = parseFloat(hospital.getAttribute('data-latitude'));
+                const hospitalLongitude = parseFloat(hospital.getAttribute('data-longitude'));
+                const hospitalCity = hospital.querySelector('p').textContent; // Assuming the city is in a <p> tag
+    
+                const distance = calculateDistance(userLatitude, userLongitude, hospitalLatitude, hospitalLongitude);
+                console.log(`Distance to Hospital: ${distance} km, ${hospitalCity}`); // Debug log
+    
+                // Create and display city and distance
+                let distanceElement = hospital.querySelector('.distance-info');
+                if (!distanceElement) {
+                    distanceElement = document.createElement('p');
+                    distanceElement.classList.add('distance-info');
+                    hospital.appendChild(distanceElement);
+                }
+                distanceElement.textContent = `Distance: ${distance.toFixed(2)} km, ${hospitalCity}`;
+    
+                if (distance > 100) { 
+                    hospital.style.display = 'none';
+                } else {
+                    hospital.style.display = 'block';
+                }
+            });
+        }
+    
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            let dLat = (lat2 - lat1) * Math.PI / 180.0;
+            let dLon = (lon2 - lon1) * Math.PI / 180.0;
+               
+            // convert to radians
+            lat1 = (lat1) * Math.PI / 180.0;
+            lat2 = (lat2) * Math.PI / 180.0;
+             
+            // apply formula
+            let a = Math.pow(Math.sin(dLat / 2), 2) + 
+                       Math.pow(Math.sin(dLon / 2), 2) * 
+                       Math.cos(lat1) * 
+                       Math.cos(lat2);
+            let rad = 6371; // Radius of the Earth in km
+            let c = 2 * Math.asin(Math.sqrt(a));
+            return rad * c;
+        }
+        
+        document.addEventListener('DOMContentLoaded', function () {
+            const hospitalsList = document.getElementById('hospitalsList');
+            const hospitals = Array.from(hospitalsList.getElementsByClassName('hospital-card'));
+    
+            hospitals.sort((a, b) => parseFloat(b.dataset.rating) - parseFloat(a.dataset.rating));
+            hospitals.forEach(hospital => hospitalsList.appendChild(hospital));
+        });
+        
+        // Filter hospitals by search input
+        document.getElementById('searchBar').addEventListener('input', function () {
+            const searchQuery = this.value.toLowerCase();
+            document.querySelectorAll('.hospital-card').forEach(hospital => {
+                const hospitalName = hospital.querySelector('h3').textContent.toLowerCase();
+                hospital.style.display = hospitalName.includes(searchQuery) ? 'block' : 'none';
+            });
+        });
+    </script>
+    
+</body>
+
+</html>

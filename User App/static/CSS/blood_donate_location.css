@@ -1,0 +1,173 @@
+
+    /* Header Styles */
+    /* header {
+        background-color: #09bcb9;
+        backdrop-filter: blur(25px);
+        color: white;
+        padding: 20px;
+        text-align: center;
+    }
+     */
+
+     header {
+        background: linear-gradient(135deg, rgba(9, 188, 185, 0.8), rgba(6, 160, 154, 0.8)); /* Adds a gradient for depth */
+        backdrop-filter: blur(25px);
+        color: #ffffff; /* Light text color for contrast */
+        padding: 20px;
+        text-align: center;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Modern font style */
+        font-size: 1.8em;
+        font-weight: bold;
+        letter-spacing: 1px;
+        transition: background 0.3s ease-in-out, transform 0.3s ease; /* Smooth background transition */
+        border-radius: 0 0 15px 15px; /* Rounded bottom corners */
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Slight shadow for depth */
+    }
+    
+    /* Hover effect for an interactive look */
+    header:hover {
+        background: linear-gradient(135deg, #09bcb9, #04a1a1); /* Darkens on hover */
+        transform: translateY(-5px); /* Slight upward movement */
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3); /* Deepens shadow on hover */
+        letter-spacing: 1.5px; /* Subtle spacing increase */
+    }
+    
+    /* Optional keyframes for animated entry effect */
+    @keyframes fadeInSlideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Apply the animation on page load */
+    header {
+        animation: fadeInSlideDown 1s ease-out;
+    }
+
+    
+
+
+    .header-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .header-content img {
+        max-width: 80px;
+        height: auto;
+        border-radius: 50%;
+        margin-bottom: 10px;
+    }
+
+    .header-content h1 {
+        
+        font-size: 24px;
+    }
+
+    /* Body and Container Styles */
+    body {
+        font-family: Arial, sans-serif;
+        background-size: cover;
+        width: 100%;
+        height: 100%;
+        background-position: center;
+    }
+        
+    /* .container {
+        width: 60%;
+        margin: 100px auto;
+        padding: 80px;
+        background-color:#09bcb9; 
+        border-radius: 10px;
+        text-align: left;
+        box-shadow: 0 4px 8px rgba(55, 50, 50, 0.2); 
+    } */
+
+    .container {
+        width: 60%;
+        margin: 100px auto;
+        padding: 80px;
+        background: linear-gradient(135deg, #09bcb9, #06a09a); /* Adds a gradient for a stylish look */
+        border-radius: 15px; /* Slightly more rounded corners */
+        text-align: left;
+        box-shadow: 0 6px 15px rgba(55, 50, 50, 0.3); /* Deeper shadow for a floating effect */
+        transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth animation on hover */
+        color: #ffffff; /* Light text color for contrast */
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Modern font style */
+    }
+    
+    /* Hover effect for a more interactive feel */
+    .container:hover {
+        transform: scale(1.02); /* Slightly scales up the container on hover */
+        box-shadow: 0 10px 20px rgba(55, 50, 50, 0.4); /* Increases shadow on hover */
+    }
+    
+    /* Optional text styling inside the container */
+    .container h1, .container p {
+        margin: 0;
+        padding: 5px 0;
+    }
+    
+    .container h1 {
+        font-size: 2em;
+        font-weight: bold;
+    }
+    
+    .container p {
+        font-size: 1.1em;
+        line-height: 1.6;
+    }
+    
+
+    /* Responsive Styles */
+    @media (max-width: 1024px) { /* Tablets, smaller screens */
+        .container {
+            width: 80%;
+            padding: 60px;
+            margin: 100px auto;
+        }
+        .header-content h1 {
+            font-size: 22px;
+        }
+    }
+
+    @media (max-width: 768px) { /* Portrait tablets, large phones */
+        .container {
+            width: 80%;
+            padding: 40px;
+            margin: 80px auto;
+        }
+        .header-content img {
+            max-width: 60px;
+        }
+        .header-content h1 {
+            font-size: 20px;
+        }
+    }
+
+    @media (max-width: 480px) { /* Smartphones */
+        .container {
+            width: 80%;
+            padding: 20px;
+            margin: 50px auto;
+        }
+        h1 {
+            font-size: 20px; /* Adjust font size for smaller screens */
+        }
+        p {
+            font-size: 16px; /* Adjust paragraph font size */
+        }
+        .header-content img {
+            max-width: 50px;
+        }
+        .header-content h1 {
+            font-size: 18px;
+        }
+    }
+    

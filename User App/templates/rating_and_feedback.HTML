@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rating</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='../static/CSS/rating_and_feedback.css') }}">
+    
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <img src="{{ url_for('static', filename='../static/images/doc.avif') }}" alt="Header Image">
+            
+        </div>
+    </header>
+
+    <div class="container">
+        <h1>General Hospital</h1>
+        <h1>Doctor Name: Dr. Mona</h1>
+       
+        <div class="rating-container">
+            <h3>Rate for Doctor</h3>
+              <div class="rating-stars">
+                <input type="radio" id="star5" name="rating" value="5">
+                <label for="star5" title="5 stars">★</label>
+        
+                <input type="radio" id="star4" name="rating" value="4">
+                <label for="star4" title="4 stars">★</label>
+        
+                <input type="radio" id="star3" name="rating" value="3">
+                <label for="star3" title="3 stars">★</label>
+        
+                <input type="radio" id="star2" name="rating" value="2">
+                <label for="star2" title="2 stars">★</label>
+        
+                <input type="radio" id="star1" name="rating" value="1">
+                <label for="star1" title="1 star">★</label>
+              </div>
+           
+          </div>
+        <textarea id="feedback" name="feedback" rows="4" placeholder="Write your feedback" required></textarea>
+        <button type="submit">Submit</button>
+     
+    </div>
+
+
+</body>
+</html>

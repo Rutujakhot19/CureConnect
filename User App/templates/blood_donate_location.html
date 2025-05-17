@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donate</title>
+    <script>
+        // Function to retrieve URL parameters
+        function getUrlParameter(name) {
+            var url = window.location.href;
+            var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(url);
+            if (results == null) {
+                return null;
+            } else {
+                return decodeURIComponent(results[1]) || 0;
+            }
+        }
+
+        // Check if latitude and longitude exist in the URL
+        var latitude = getUrlParameter('latitude');
+        var longitude = getUrlParameter('longitude');
+
+        // Only fetch geolocation if latitude and longitude are not present in the URL
+        if (!latitude || !longitude) {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    latitude = position.coords.latitude;
+                    longitude = position.coords.longitude;
+
+                    // Redirect to the same page with latitude and longitude in the URL
+                    window.location.href = '/blood-donate-location?latitude=' + latitude + '&longitude=' + longitude;
+                }, function(error) {
+                    alert("Geolocation is not supported or user denied access.");
+                });
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+    </script>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/blood_donate_location.css') }}">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <img src="{{ url_for('static', filename='images/solidarity-5030921_1280.png') }}" alt="Header Image">
+            <h1>Blood Bank</h1>
+        </div>
+    </header>
+
+    <div class="container">
+        {% if blood_banks %}
+            <h2>Nearby Blood Banks:</h2>
+            <ul>
+                {% for bank in blood_banks %}
+                    <li>
+                        <h3>{{ bank.name }}</h3>
+                        <p>Location: {{ bank.location }}</p>
+                        <p>Phone No.: {{ bank.phone_number }}</p>
+                        <p>Time: {{ bank.timing }}</p>
+                        <p>Distance: {{ bank.distance }} km</p>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No blood banks found within 50 km.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

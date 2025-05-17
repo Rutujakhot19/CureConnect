@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Page</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/appointment_form.css') }}">
+    <script>
+        // Set today's date as the minimum date for the appointment date input
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+            document.getElementById('appointment_date').setAttribute('min', today); // Set the min attribute
+        });
+    </script>
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="header-container">
+            <img src="{{ url_for('static', filename='images/casepaper.jpg') }}" alt="Image" class="user-image">
+            <div class="header-title">Confirm Appointment</div>
+        </div>
+    </header>
+
+    <!-- Form Section -->
+    <main>
+        <form action="{{ url_for('pay_page', doctor_id=doctor_id) }}" method="post" class="appointment-form">
+            <input type="text" placeholder="Name" name="name" required>
+            <input type="text" placeholder="Address" name="address" required>
+            <input type="text" placeholder="Contact No." name="contact" pattern="\d{10}" maxlength="10" title="Please enter a valid 10-digit phone number" required>
+            <input type="email" placeholder="Email" name="email" required title="Please enter a valid email address">
+            <input type="date" id="appointment_date" name="appointment_date" required>
+            <select name="payment_mode" required>
+                <option value="" disabled selected>Select Payment Mode</option>
+                <option value="UPI">UPI</option>
+                <option value="offline">Offline</option>
+            </select>
+            <input type="hidden" name="doctor_id" value="{{ doctor_id }}">
+
+            <button type="submit">Submit and Pay</button>
+        </form>
+    </main>
+</body>
+</html>

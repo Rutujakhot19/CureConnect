@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Route Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        #map { height: 80vh; }
+        #form { margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <div id="form">
+        <form id="route-form">
+            <label for="start">Start Location (Name or Coordinates):</label>
+            <input type="text" id="start" name="start" placeholder="Enter start location or coordinates" required>
+            <label for="destination">Destination Location (Name or Coordinates):</label>
+            <input type="text" id="destination" name="destination" placeholder="Enter destination location or coordinates" required>
+            <button type="submit">Get Route</button>
+        </form>
+    </div>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        var map = L.map('map').setView([18.5204, 73.8567], 7); // Initial view
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        document.getElementById('route-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var start = document.getElementById('start').value;
+            var destination = document.getElementById('destination').value;
+
+            fetch('/route', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams({
+                    'start': start,
+                    'destination': destination
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.error) {
+                    console.error('Error:', data.error);
+                    return;
+                }
+
+                map.eachLayer(function (layer) {
+                    if (layer instanceof L.Polyline) {
+                        map.removeLayer(layer);
+                    }
+                });
+
+                var latlngs = data.map(point => [point[0], point[1]]);
+                
+                L.polyline(latlngs, { color: 'blue', weight: 2.5, opacity: 1 }).addTo(map);
+
+                L.marker(latlngs[0]).addTo(map).bindPopup('Start');
+                L.marker(latlngs[latlngs.length - 1]).addTo(map).bindPopup('End');
+                
+                map.fitBounds(L.polyline(latlngs).getBounds());
+            })
+            .catch(error => {
+                console.error('Error fetching route:', error);
+            });
+        });
+    </script>
+</body>
+</html>
