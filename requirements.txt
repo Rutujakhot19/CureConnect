@@ -1,0 +1,6 @@
+Flask
+Flask-Bcrypt
+Flask-MySQLdb
+haversine
+mysql-connector-python
+PyMySQL 
