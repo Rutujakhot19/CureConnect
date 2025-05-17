@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Register</title>
+</head>
+<body style="margin: 0; padding: 0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; background: linear-gradient(135deg, #6e8efb, #a777e3); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #fff;">
+  <div style="background: rgba(255, 255, 255, 0.95); padding: 40px; border-radius: 15px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); max-width: 400px; width: 90%; text-align: center; animation: fadeIn 1s ease-in-out;">
+    <h1 style="font-size: 2.2em; margin-bottom: 20px; color: #333; text-transform: uppercase; letter-spacing: 1px;">Register</h1>
+    <form method="POST" onsubmit="return validateForm(event)" style="display: flex; flex-direction: column; gap: 15px;">
+
+      <label for="id" style="color: #333; font-weight: bold; text-align: left;">ID:</label>
+      <input type="text" name="id" id="id" required style="padding: 10px; border: 1px solid #ccc; border-radius: 8px;" onfocus="this.style.borderColor='#6e8efb';" onblur="this.style.borderColor='#ccc';">
+      <p id="idError" style="display: none; color: #e74c3c; font-size: 0.9em;"></p>
+
+      <label for="username" style="color: #333; font-weight: bold; text-align: left;">Username:</label>
+      <input type="text" name="username" id="username" required style="padding: 10px; border: 1px solid #ccc; border-radius: 8px;" onfocus="this.style.borderColor='#6e8efb';" onblur="this.style.borderColor='#ccc';">
+      <p id="usernameError" style="display: none; color: #e74c3c; font-size: 0.9em;"></p>
+
+      <label for="password" style="color: #333; font-weight: bold; text-align: left;">Password:</label>
+      <input type="password" name="password" id="password" required style="padding: 10px; border: 1px solid #ccc; border-radius: 8px;" onfocus="this.style.borderColor='#6e8efb';" onblur="this.style.borderColor='#ccc';">
+      <p id="passwordError" style="display: none; color: #e74c3c; font-size: 0.9em;"></p>
+
+      <label for="confirmPassword" style="color: #333; font-weight: bold; text-align: left;">Confirm Password:</label>
+      <input type="password" name="confirmPassword" id="confirmPassword" required style="padding: 10px; border: 1px solid #ccc; border-radius: 8px;" onfocus="this.style.borderColor='#6e8efb';" onblur="this.style.borderColor='#ccc';">
+      <p id="confirmPasswordError" style="display: none; color: #e74c3c; font-size: 0.9em;"></p>
+
+      <button type="submit" style="padding: 12px; background: #6e8efb; color: #fff; border: none; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; transition: background 0.3s, transform 0.3s;">Register</button>
+    </form>
+
+    <a href="{{ url_for('login') }}" style="display: inline-block; margin-top: 20px; color: #6e8efb; text-decoration: none; font-weight: bold; transition: color 0.3s;">Already have an account? Login here!</a>
+  </div>
+
+  <style>
+    button:hover, a:hover {
+      background: #a777e3 !important;
+      color: #fff !important;
+      transform: translateY(-3px);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 1.8em; }
+      div { padding: 20px; }
+      input, button { font-size: 0.9em; }
+    }
+  </style>
+
+  <script>
+    function validateForm(event) {
+      event.preventDefault();
+      let isValid = true;
+
+      // Reset error messages
+      document.getElementById('idError').style.display = 'none';
+      document.getElementById('usernameError').style.display = 'none';
+      document.getElementById('passwordError').style.display = 'none';
+      document.getElementById('confirmPasswordError').style.display = 'none';
+
+      const id = document.getElementById('id').value.trim();
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+
+      if (!id) {
+        document.getElementById('idError').innerText = 'ID is required.';
+        document.getElementById('idError').style.display = 'block';
+        isValid = false;
+      }
+
+      if (!username) {
+        document.getElementById('usernameError').innerText = 'Username is required.';
+        document.getElementById('usernameError').style.display = 'block';
+        isValid = false;
+      }
+
+      if (password.length < 6) {
+        document.getElementById('passwordError').innerText = 'Password must be at least 6 characters.';
+        document.getElementById('passwordError').style.display = 'block';
+        isValid = false;
+      }
+
+      if (password !== confirmPassword) {
+        document.getElementById('confirmPasswordError').innerText = 'Passwords do not match.';
+        document.getElementById('confirmPasswordError').style.display = 'block';
+        isValid = false;
+      }
+
+      if (isValid) {
+        event.target.submit();
+      }
+
+      return isValid;
+    }
+  </script>
+</body>
+</html>

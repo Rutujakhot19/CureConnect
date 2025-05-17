@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver Registration</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>Driver Registration</h2>
+        
+        {% if msg %}
+            <div class="message">{{ msg }}</div>
+        {% endif %}
+        
+        <form id="registerForm" action="{{ url_for('register') }}" method="post">
+            <input type="text" name="name" placeholder="Full Name" required>
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="tel" name="phone" placeholder="Phone Number" required>
+            <input type="date" name="dob" placeholder="Date of Birth" required>
+            <input type="password" name="password" placeholder="Password" required>
+            
+            <!-- Hidden fields for location -->
+            <input type="hidden" id="latitude" name="latitude" value="0">
+            <input type="hidden" id="longitude" name="longitude" value="0">
+            
+            <div id="location-status" class="location-status">
+                <span id="location-icon" class="location-icon">📍</span>
+                <span id="location-text">Getting your location...</span>
+            </div>
+            
+            <button type="submit" id="submitBtn">Register</button>
+        </form>
+        
+        <div class="form-footer">
+            <p>Already have an account? <a href="{{ url_for('login') }}">Login here</a></p>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const locationStatus = document.getElementById('location-status');
+            const locationText = document.getElementById('location-text');
+            const locationIcon = document.getElementById('location-icon');
+            const latitudeField = document.getElementById('latitude');
+            const longitudeField = document.getElementById('longitude');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            submitBtn.disabled = true;
+            
+            function getLocation() {
+                if (navigator.geolocation) {
+                    locationStatus.classList.add('pending');
+                    locationText.textContent = 'Getting your location...';
+                    
+                    navigator.geolocation.getCurrentPosition(
+                        function(position) {
+                            const latitude = position.coords.latitude;
+                            const longitude = position.coords.longitude;
+
+                            latitudeField.value = latitude;
+                            longitudeField.value = longitude;
+                            
+                            locationStatus.classList.remove('pending');
+                            locationStatus.classList.add('success');
+                            locationIcon.textContent = '✅';
+                            locationText.textContent = 'Location acquired!';
+                            
+                            submitBtn.disabled = false;
+                        },
+                        function(error) {
+                            console.error('Error getting location:', error);
+                            
+                            locationStatus.classList.remove('pending');
+                            locationStatus.classList.add('error');
+                            locationIcon.textContent = '❌';
+                            
+                            switch(error.code) {
+                                case error.PERMISSION_DENIED:
+                                    locationText.textContent = 'Location permission denied. Please enable location access.';
+                                    break;
+                                case error.POSITION_UNAVAILABLE:
+                                    locationText.textContent = 'Location information unavailable.';
+                                    break;
+                                case error.TIMEOUT:
+                                    locationText.textContent = 'Location request timed out.';
+                                    break;
+                                default:
+                                    locationText.textContent = 'Unknown error occurred getting location.';
+                            }
+                            
+                            // Add retry button
+                            const retryBtn = document.createElement('button');
+                            retryBtn.textContent = 'Retry';
+                            retryBtn.type = 'button';
+                            retryBtn.className = 'retry-btn';
+                            retryBtn.onclick = function() {
+                                locationStatus.removeChild(retryBtn);
+                                getLocation();
+                            };
+                            locationStatus.appendChild(retryBtn);
+                            
+                            // Enable submit button anyway after error
+                            submitBtn.disabled = false;
+                        },
+                        // Options
+                        {
+                            enableHighAccuracy: true,
+                            timeout: 10000,
+                            maximumAge: 0
+                        }
+                    );
+                } else {
+                    locationStatus.classList.add('error');
+                    locationText.textContent = 'Geolocation is not supported by this browser.';
+                    submitBtn.disabled = false;
+                }
+            }
+            
+            // Start getting location when page loads
+            getLocation();
+            
+            // Form validation before submit
+            document.getElementById('registerForm').addEventListener('submit', function(event) {
+                // If location was not acquired, confirm with user
+                if (latitudeField.value === "0" && longitudeField.value === "0") {
+                    const proceed = confirm('Your location could not be determined. Continue registration without location?');
+                    if (!proceed) {
+                        event.preventDefault();
+                        getLocation(); // Try again
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital List</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='../static/CSS/hospital_list_rating.css') }}">
+    
+</head>
+
+<body>
+    
+    <header>
+        <img src="{{ url_for('static', filename='../static/images/hoss.png') }}" alt="User Image" class="user-image">
+        <div class="header-title">Hospital List</div>
+    </header>
+
+    <!-- Search for hospital -->
+    <div class="search-container">
+        <input type="text" id="searchBar" placeholder="Search for a hospital...">
+    </div>
+
+    <!-- Hospitals List -->
+    <div class="hospitals-list-container" id="hospitalsList">
+        {% for hospital in hospitals %}
+            <a href="{{ url_for('Doctor_info', id=hospital[0]) }}" class="hospital-card">
+                <h3>{{ hospital[1] }}</h3>
+                <p>Doctor Name: {{ hospital[2] }}</p>
+                <p>Date: {{ hospital[3] }}</p>
+            </a>
+        {% endfor %}
+    </div>
+ 
+
+    <script>
+        
+
+        // Filter hospitals by search input
+        document.getElementById('searchBar').addEventListener('input', function () {
+            const searchQuery = this.value.toLowerCase();
+            document.querySelectorAll('.hospital-card').forEach(hospital => {
+                const hospitalName = hospital.querySelector('h3').textContent.toLowerCase();
+                hospital.style.display = hospitalName.includes(searchQuery) ? 'block' : 'none';
+            });
+        });
+
+        // Redirect to the hospital's detail page on click
+        document.querySelectorAll('.hospital-card').forEach(hospital => {
+            hospital.addEventListener('click', function () {
+                const url = hospital.querySelector('a')?.href;
+                if (url) {
+                    window.location.href = url;
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

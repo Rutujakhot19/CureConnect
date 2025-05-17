@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/dashboard.css') }}">
+</head>
+<body>
+    <header>
+        <div class="logo">Driver App</div>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('dashboard') }}" class="active">Dashboard</a></li>
+            </ul>
+        </nav>
+        <div class="user-menu">
+            <span>{{ username }}</span>
+            <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+        </div>
+    </header>
+    <main>
+        <div class="welcome-banner">
+            <h1>Welcome, {{ name }}!</h1>
+            <p>Here's your driver dashboard</p>
+        </div>
+        <div class="dashboard-grid">
+            <div class="card">
+                <h3>Your Status</h3>
+                <div class="status {% if is_active %}active{% else %}inactive{% endif %}">
+                    <span class="status-indicator"></span>
+                    <span>{% if is_active %}Active{% else %}Inactive{% endif %}</span>
+                </div>
+                <button class="toggle-status">{% if is_active %}Go Inactive{% else %}Go Active{% endif %}</button>
+            </div>
+            <div class="card">
+                <h3>Active Rides</h3>
+                <div id="active_rides">
+
+                </div>
+            </div>
+            <div class="card">
+                <h3>Quick Actions</h3>
+                <div class="action-buttons">
+                    <button id="start-trip">Start Trip</button>
+                    <button id="update-location-btn">Update Location</button>
+                    <button id="trips-btn">View Requests</button>
+                </div>
+            </div>
+            <div class="card">
+                <h3>Notifications</h3>
+                <div class="notification-list" id="notification-area">
+                    <p class="no-items">No new notifications</p>
+                </div>
+            </div>
+            <div class="card">
+                <h3>Trip</h3>
+                <div id="notification"></div>
+                <div id="trip-results"></div>
+            </div>
+        </div>
+    </main>
+    
+    <script>
+        // Function to show notifications
+        window.onload = function() {
+            showCurrentTrip();
+        };
+        function showNotification(message, isSuccess = true) {
+            const notificationArea = document.getElementById('notification-area');
+            const notification = document.createElement('div');
+            notification.className = isSuccess ? 'notification success' : 'notification error';
+            notification.textContent = message;
+            
+            // Remove "no items" message if it exists
+            const noItems = notificationArea.querySelector('.no-items');
+            if (noItems) {
+                notificationArea.removeChild(noItems);
+            }
+            
+            notificationArea.appendChild(notification);
+            
+            // Remove notification after 5 seconds
+            setTimeout(() => {
+                notificationArea.removeChild(notification);
+                if (notificationArea.children.length === 0) {
+                    const noItemsMsg = document.createElement('p');
+                    noItemsMsg.className = 'no-items';
+                    noItemsMsg.textContent = 'No new notifications';
+                    notificationArea.appendChild(noItemsMsg);
+                }
+            }, 5000);
+        }
+        
+        document.getElementById("start-trip").addEventListener("click", function() {
+            fetch('/get_trips', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                
+                if (data.from.length > 0) {
+                    showNotification('Redirecting.............');
+                    const from = data.from;
+                    const to = data.to;
+        
+                    const url = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(from)}&destination=${encodeURIComponent(to)}`;
+                    window.open(url, '_blank');
+                }
+                else{
+                    showNotification('No trips are active');
+                }
+            })
+            .catch(error => {
+                showNotification('Error: ' + error.message, false);
+            });
+        });
+        
+        // Handle status toggle
+        document.querySelector('.toggle-status').addEventListener('click', function() {
+            const statusDiv = document.querySelector('.status');
+            const button = document.querySelector('.toggle-status');
+            const newStatus = !statusDiv.classList.contains('active');
+            
+            fetch('/update_status', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    is_active: newStatus
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Update UI based on new status
+                    if (newStatus) {
+                        statusDiv.classList.remove('inactive');
+                        statusDiv.classList.add('active');
+                        statusDiv.innerHTML = '<span class="status-indicator"></span><span>Active</span>';
+                        button.textContent = 'Go Inactive';
+                        showNotification('You are now active and available for trips');
+                    } else {
+                        statusDiv.classList.remove('active');
+                        statusDiv.classList.add('inactive');
+                        statusDiv.innerHTML = '<span class="status-indicator"></span><span>Inactive</span>';
+                        button.textContent = 'Go Active';
+                        showNotification('You are now inactive and will not receive trip requests');
+                    }
+                } else {
+                    showNotification('Failed to update status: ' + data.message, false);
+                }
+            })
+            .catch(error => {
+                showNotification('Error: ' + error.message, false);
+            });
+        });
+        
+        document.getElementById('trips-btn').addEventListener('click', function () {
+            if (!navigator.geolocation) {
+                showNotification('Geolocation is not supported by your browser', false);
+                return;
+            }
+        
+            showNotification('Getting your current location...', true);
+        
+            navigator.geolocation.getCurrentPosition(
+                function (position) {
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+        
+                    fetch('/update_trips', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            latitude: latitude,
+                            longitude: longitude
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                            const nearbyTrips = data.nearby;
+                            const resultsContainer = document.getElementById('trip-results');
+                            resultsContainer.innerHTML = '';
+        
+                            if (nearbyTrips.length > 0) {
+                                showNotification(`Found ${nearbyTrips.length} nearby trips`, true);
+                                nearbyTrips.forEach(trip => {
+                                    const tripElement = document.createElement('div');
+                                    tripElement.classList.add('trip-item');
+                                    tripElement.textContent = `Trip: ${trip.name}, Distance: (${trip.distance})`;
+        
+                                    // Handle trip click
+                                    tripElement.addEventListener('click', function () {
+                                        // Send the driver location and trip location to the backend to accept the trip
+                                        fetch('/accept_trip', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                            },
+                                            body: JSON.stringify({
+                                                id: trip.id,
+                                                user_id: trip.name,
+                                                driver_latitude: latitude,
+                                                driver_longitude: longitude,
+                                                trip_latitude: trip.latitude,
+                                                trip_longitude: trip.longitude
+                                            })
+                                        })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            if (data.status === 'success') {
+                                                updateDriverStatusToInactive();
+        
+                                                showNotification('Successfully accepted the trip! You are now inactive.');
+                                                location.reload();
+                                            } else {
+                                                showNotification('Failed to accept the trip: ' + data.message, false);
+                                            }
+                                        })
+                                        .catch(error => {
+                                            showNotification('Error accepting the trip: ' + error.message, false);
+                                        });
+                                    });
+        
+                                    resultsContainer.appendChild(tripElement);
+                                });
+                            } else {
+                                showNotification('No nearby trips found / You are now inactive.', false);
+                            }
+                        })
+                        .catch(error => {
+                            showNotification('Error: ' + error.message, false);
+                        });
+                },
+                function (error) {
+                    showNotification('Geolocation error: ' + error.message, false);
+                }
+            );
+        });
+        function showCurrentTrip() {
+            const resultsContainer = document.getElementById('active_rides');
+            fetch('/get_trips', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                const Element = document.getElementById('active_rides'); 
+                const tripElement = document.createElement('div');
+                tripElement.classList.add('trip');
+        
+                const h5Tag = document.createElement('h4');
+                h5Tag.textContent = `${data.name}`;
+                tripElement.appendChild(h5Tag);
+        
+                // Create and append "From" and "To"
+                const hTag = document.createElement('h5');
+                const num = document.createElement('h5');
+                num.textContent = `Mobile Number: ${data.num}`;
+                hTag.appendChild(num);
+                const fromText = document.createElement('h5');
+                fromText.textContent = `From: ${data.from}`;
+                hTag.appendChild(fromText);
+        
+                const toText = document.createElement('h5');
+                toText.textContent = `To: ${data.to}`;
+                hTag.appendChild(toText);
+        
+                tripElement.appendChild(hTag);
+        
+                // Create the "Complete" button and apply the CSS class
+                const completeButton = document.createElement('button');
+                completeButton.textContent = 'Complete';
+                completeButton.classList.add('complete-button');  
+        
+                completeButton.addEventListener('click', function () {
+                    completed_trip(data); 
+                });
+        
+                tripElement.addEventListener('click', function () {
+                    completeButton.style.display = 'inline-block';
+                });
+        
+                tripElement.appendChild(completeButton);  
+                Element.appendChild(tripElement);
+            })
+            .catch(error => {
+                showNotification('No Active trips');
+            });
+        }
+        
+        function completed_trip(tripData) {
+            fetch('/completed_trip', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    id: tripData.id
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    updateDriverStatusToActive();
+
+                    showNotification('Successfully completed the trip! You are now active.');
+                    
+
+                } else {
+                    showNotification('Failed to complete the trip: ' + data.message, false);
+                }
+                
+            })
+            .catch(error => {
+                showNotification('Error complete the trip: ' + error.message, false);
+            });
+        }
+        
+        function updateDriverStatusToActive() {
+            const statusDiv = document.querySelector('.status');
+            const button = document.querySelector('.toggle-status');
+            
+            // Update status to inactive
+            statusDiv.classList.remove('inactive');
+            statusDiv.classList.add('active');
+            statusDiv.innerHTML = '<span class="status-indicator"></span><span>Active</span>';
+            button.textContent = 'Go Inactive';
+            location.reload();
+        }
+        
+        // Function to update the UI to reflect that the driver is inactive
+        function updateDriverStatusToInactive() {
+            const statusDiv = document.querySelector('.status');
+            const button = document.querySelector('.toggle-status');
+            
+            // Update status to inactive
+            statusDiv.classList.remove('active');
+            statusDiv.classList.add('inactive');
+            statusDiv.innerHTML = '<span class="status-indicator"></span><span>Inactive</span>';
+            button.textContent = 'Go Active';
+            
+            showNotification('You are now inactive and will not receive further trip requests.');
+        }
+        // Update location button
+        document.getElementById('update-location-btn').addEventListener('click', function() {
+            if (!navigator.geolocation) {
+                showNotification('Geolocation is not supported by your browser', false);
+                return;
+            }
+            
+            // Show that we're getting location
+            showNotification('Getting your current location...', true);
+            
+            navigator.geolocation.getCurrentPosition(
+                // Success callback
+                function(position) {
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+                    
+                    // Send location to server
+                    fetch('/update_location', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            latitude: latitude,
+                            longitude: longitude
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            showNotification('Location updated successfully');
+                        } else {
+                            showNotification('Failed to update location: ' + data.message, false);
+                        }
+                    })
+                    .catch(error => {
+                        showNotification('Error: ' + error.message, false);
+                    });
+                },
+                // Error callback
+                function(error) {
+                    let errorMessage;
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED:
+                            errorMessage = 'Location permission denied';
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            errorMessage = 'Location information is unavailable';
+                            break;
+                        case error.TIMEOUT:
+                            errorMessage = 'Location request timed out';
+                            break;
+                        default:
+                            errorMessage = 'Unknown error occurred';
+                            break;
+                    }
+                    showNotification(errorMessage, false);
+                }
+            );
+        });
+    </script>
+    </body>
+    </html>

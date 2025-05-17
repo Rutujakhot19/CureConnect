@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quick Ride</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='/CSS/get_ride.css') }}">
+  <style>
+    /* Add custom styles if needed */
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Quick Ride</h1>
+    <div class="iconr">🚗</div>
+    <div id="locationInfo"></div>
+    <p class="tagline">Your ride is just a click away!</p>
+    
+    <div class="button-container">
+      <button id="getLocation">
+        <span class="icon">📍</span> Get Location
+      </button>
+      
+      <button id="bookRide">
+        <span class="icon">✨</span> Book Ride
+      </button>
+      <button id="ShowStatus">
+        <span class="icon">⏱️</span> check Status
+      </button>
+    </div>
+
+    <div class="booking-details" id="bookingDetails" style="display:none;">
+      <h3>Booking Details</h3>
+      <p><strong id="id1">Location:</strong> <span id="rideLocation">Not yet selected</span></p>
+      <p><strong id="id2">Rider:</strong> <span id="rideType">Standard</span></p>
+      <p><strong id="id4"> </strong> <span id="number"> </span></p>
+      <p><strong id="id3">Status:</strong> <span id="bookingStatus">Pending</span></p>
+    </div>
+
+    <div class="extra-info">
+      <p>Need help? <a href="mailto:support@ambulence.com">Contact Support</a></p>
+      <p>Or check out our <a href="#">FAQ</a> for more information.</p>
+    </div>
+  </div>
+
+  <script>
+    // Declare latitude, longitude, userLatitude, and userLongitude globally
+    let latitude, longitude, userLatitude, userLongitude;
+
+    document.getElementById('getLocation').addEventListener('click', function () {
+      const urlParams = new URLSearchParams(window.location.search);
+      userLatitude = urlParams.get('latitude');
+      userLongitude = urlParams.get('longitude');
+    
+      if (!userLatitude || !userLongitude) {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+            latitude = position.coords.latitude;
+            longitude = position.coords.longitude;
+
+            // Update the location details and show booking information
+            document.getElementById('bookingDetails').style.display = 'block';
+            document.getElementById('rideLocation').textContent = `${latitude}, ${longitude}`;
+            document.getElementById('id2').textContent = 'Please click on book ride to book ride';
+            
+            document.getElementById('rideType').textContent = ' ';
+            document.getElementById('id3').textContent = ' ';
+            document.getElementById('bookingStatus').textContent = ' ';
+          }, function(error) {
+            alert("Error getting location: " + error.message);
+          });
+        } else {
+          alert("Geolocation is not supported by this browser.");
+        }
+      } else {
+        latitude = userLatitude;
+        longitude = userLongitude;
+
+        document.getElementById('bookingDetails').style.display = 'block';
+        document.getElementById('rideLocation').textContent = `${userLatitude}, ${userLongitude}`;
+        document.getElementById('id2').textContent = 'Please click on book ride to book ride';
+            
+        document.getElementById('rideType').textContent = ' ';
+        document.getElementById('id3').textContent = ' ';
+        document.getElementById('bookingStatus').textContent = ' ';
+      }
+    });
+
+    document.getElementById('bookRide').addEventListener('click', function () {
+          const latitude = parseFloat(document.getElementById('rideLocation').textContent.split(',')[0].trim());
+          const longitude = parseFloat(document.getElementById('rideLocation').textContent.split(',')[1].trim());
+          fetch('/book_ride', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ latitude: latitude, longitude: longitude }),
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.status === 'Confirmed') {
+              document.getElementById('rideType').textContent = 'Finding.....';
+              document.getElementById('bookingStatus').textContent = 'Pending';
+              document.getElementById('id2').textContent = 'Rider:';
+              document.getElementById('id3').textContent = 'Status:';
+            }
+            alert(data.message);
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            alert('Something went wrong!');
+          });
+    });
+    document.getElementById('ShowStatus').addEventListener('click', function () {
+        const latitude = parseFloat(document.getElementById('rideLocation').textContent.split(',')[0].trim());
+        const longitude = parseFloat(document.getElementById('rideLocation').textContent.split(',')[1].trim());
+        fetch('/show_ride', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ latitude: latitude, longitude: longitude }),
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'Confirmed') {
+            document.getElementById('rideType').textContent = data.driver_name;
+            document.getElementById('id4').textContent = 'Phone:';
+            document.getElementById('number').textContent = data.driver_num;
+            document.getElementById('bookingStatus').textContent = 'Confirmed';
+            document.getElementById('id2').textContent = 'Rider:';
+            document.getElementById('id3').textContent = 'Status:';
+          }
+          alert(data.message);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Something went wrong!');
+        });
+    });
+      
+  </script>
+</body>
+
+</html>

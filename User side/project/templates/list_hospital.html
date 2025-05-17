@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital List</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/list_hospital.css') }}">
+    <script>
+        // Function to retrieve URL parameters
+        function getUrlParameter(name) {
+            var url = window.location.href;
+            var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(url);
+            if (results == null) {
+                return null;
+            } else {
+                return decodeURIComponent(results[1]) || 0;
+            }
+        }
+
+        // Check if latitude and longitude exist in the URL
+        var latitude = getUrlParameter('latitude');
+        var longitude = getUrlParameter('longitude');
+
+        // Only fetch geolocation if latitude and longitude are not present in the URL
+        if (!latitude || !longitude) {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    latitude = position.coords.latitude;
+                    longitude = position.coords.longitude;
+
+                    // Redirect to the same page with latitude and longitude in the URL
+                    window.location.href = '/list_hospital?latitude=' + latitude + '&longitude=' + longitude;
+                }, function(error) {
+                    alert("Geolocation is not supported or user denied access.");
+                });
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <img src="{{ url_for('static', filename='images/hoss.png') }}" alt="Hospital Logo" class="user-image">
+        <div class="header-title">Hospital List</div>
+    </header>
+
+    <!-- Error Message -->
+    {% if error_message %}
+        <div class="error-message">{{ error_message }}</div>
+    {% endif %}
+
+    <!-- Search for hospital -->
+    <div class="search-container">
+        <input type="text" id="searchBar" placeholder="Search for a hospital...">
+    </div>
+
+    <!-- Hospitals List -->
+    <div class="hospitals-list-container" id="hospitalsList">
+        {% if hospitals %}
+            {% for hospital in hospitals %}
+            <a href="{{ url_for('BedStatus', hospital_id=hospital['hospital_id']) }}" class="hospital-card">
+                <h3>{{ hospital['hospital_name'] }}</h3>
+                <p>City: {{ hospital['location'] }}</p>
+                <p>Available Beds: {{ hospital['available_beds'] }}</p>
+                <p>Distance: {{ hospital['distance'] }} km</p>
+            </a>
+            {% endfor %}
+        {% else %}
+            <p>No hospitals found within your area.</p>
+        {% endif %}
+    </div>
+
+    <script>
+        // Search functionality
+        document.getElementById('searchBar').addEventListener('input', function () {
+            const searchQuery = this.value.toLowerCase();
+            document.querySelectorAll('.hospital-card').forEach(hospital => {
+                const hospitalName = hospital.querySelector('h3').textContent.toLowerCase();
+                hospital.style.display = hospitalName.includes(searchQuery) ? 'block' : 'none';
+            });
+        });
+    </script>
+</body>
+</html>

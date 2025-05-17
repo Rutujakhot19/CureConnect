@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bed Status</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/BedStatus.css') }}">
+</head>
+
+<body>
+    <header>
+        <div class="header-content">
+            <img src="{{ url_for('static', filename='images/bed.jpg') }}" alt="Header Image" class="header-image">
+            <h1>Bed Status</h1>
+        </div>
+    </header>
+
+    <div class="container">
+        {% if hospital and beds %}
+        <h2>Hospital Details</h2>
+        <div class="hospital-info">
+            <p><strong>Hospital Name:</strong> {{ hospital['hospital_name'] }}</p>
+            <p><strong>Location:</strong> {{ hospital['location'] }}</p>
+            <p><strong>Contact No.:</strong> {{ hospital['contact_number'] }}</p>
+        </div>
+
+        <h2>Available Beds</h2>
+        <div class="bed-info">
+            <p><strong>General Beds:</strong> {{ beds['general_beds'] }}</p>
+            <p><strong>ICU Beds:</strong> {{ beds['icu_beds'] }}</p>
+            <p><strong>Private Rooms:</strong> {{ beds['private_rooms'] }}</p>
+        </div>
+
+            {% endif %}
+        </div>
+</body>
+
+</html>

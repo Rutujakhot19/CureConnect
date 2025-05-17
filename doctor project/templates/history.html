@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Status</title>
+    <link rel="stylesheet" href="..\static\CSS\history.css">
+    
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <img src="..\static\images\Appointment.jpg" alt="Header Image">
+        </div>
+    </header>
+
+    {% for history in historys %}
+        <div class="container">
+            <h1>{{name}}</h1>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <h2 style="margin: 0;">Diagnostics:</h2>
+                <h3 style="margin: 0;">{{ history[5] }}</h3>
+            </div>
+            <h3> Date: {{history[4]}}</h3>
+        </div>
+    {% endfor %}
+
+</body>
+</html>

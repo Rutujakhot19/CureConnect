@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointments</title>
+    <link rel="stylesheet" href="..\static\CSS\appointments.css">
+    
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <img src="..\static\images\Appointment.jpg" alt="User Image" class="user-image">
+            <div class="header-title">Appointments</div>
+        </div>
+    </header>
+
+    <!-- Search for doctor -->
+    <div class="search-container">
+        <input type="text" id="searchBar" placeholder="Search for a patient...">
+       
+    </div>
+
+    <!-- Doctors List -->
+    <div class="doctors-list-container" id="doctorsList">
+        {% for appt in appointments %}
+        <div class="doctor-card">
+            <a href="{{ url_for('option', id=appt[0]) }}">
+                <h3>{{ appt[5] }}</h3>
+                <p>{{ appt[3] }}</p>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        function sortDoctors() {
+            const doctorsList = document.getElementById('doctorsList');
+            const doctors = Array.from(doctorsList.getElementsByClassName('doctor-card'));
+
+            doctors.sort((a, b) => {
+                return parseFloat(b.dataset.rating) - parseFloat(a.dataset.rating);
+            });
+
+            doctors.forEach(doctor => doctorsList.appendChild(doctor));
+        }
+
+        document.getElementById('searchBar').addEventListener('input', function() {
+            const searchQuery = this.value.toLowerCase();
+            const doctors = document.querySelectorAll('.doctor-card');
+
+            doctors.forEach(doctor => {
+                const doctorName = doctor.querySelector('h3').textContent.toLowerCase();
+                if (doctorName.includes(searchQuery)) {
+                    doctor.style.display = 'block';
+                } else {
+                    doctor.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

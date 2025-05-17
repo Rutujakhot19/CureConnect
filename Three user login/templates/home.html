@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Management System</title>
+</head>
+<body style="margin: 0; padding: 0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; background: linear-gradient(135deg, #6e8efb, #a777e3); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #fff;">
+    <div style="background: rgba(255, 255, 255, 0.95); padding: 40px; border-radius: 15px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); max-width: 500px; width: 90%; text-align: center; animation: fadeIn 1s ease-in-out;">
+        <h1 style="font-size: 2.2em; margin-bottom: 20px; color: #333; text-transform: uppercase; letter-spacing: 1px;">Hospital Management System</h1>
+
+        <ul style="list-style: none; padding: 0; margin: 20px 0;">
+            {% if session.get('user_type') == 'superuser' %}
+                <li style="margin: 10px 0;">
+                    <a href="{{ url_for('add_hospital') }}" style="display: inline-block; padding: 12px 20px; background: #6e8efb; color: #fff; text-decoration: none; border-radius: 8px; transition: transform 0.3s, background 0.3s; font-weight: bold;">Add Hospital & Blood Bank Info</a>
+                </li>
+            {% elif session.get('user_type') == 'hospital' %}
+                <li style="margin: 10px 0;">
+                    <a href="{{ url_for('add_doctor') }}" style="display: inline-block; padding: 12px 20px; background: #6e8efb; color: #fff; text-decoration: none; border-radius: 8px; transition: transform 0.3s, background 0.3s; font-weight: bold;">Add Doctor & Bed Availability</a>
+                </li>
+            {% elif session.get('user_type') == 'blood_bank' %}
+                <li style="margin: 10px 0;">
+                    <a href="{{ url_for('blood_stock') }}" style="display: inline-block; padding: 12px 20px; background: #6e8efb; color: #fff; text-decoration: none; border-radius: 8px; transition: transform 0.3s, background 0.3s; font-weight: bold;">Manage Blood Stock</a>
+                </li>
+            {% else %}
+                <p style="color: #e74c3c; font-size: 1.1em; margin: 20px 0;">You don't have access to this page.</p>
+            {% endif %}
+        </ul>
+
+        <a href="{{ url_for('logout') }}" style="display: inline-block; padding: 10px 20px; background: #e74c3c; color: #fff; text-decoration: none; border-radius: 8px; transition: transform 0.3s, background 0.3s; font-weight: bold;">Logout</a>
+    </div>
+
+    <style>
+        a:hover {
+            background: #a777e3 !important;
+            transform: translateY(-3px);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 1.8em; }
+            div { padding: 20px; }
+            a { padding: 10px 15px; font-size: 0.9em; }
+        }
+    </style>
+</body>
+</html>

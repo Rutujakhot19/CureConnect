@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Status</title>
+    <link rel="stylesheet" href="..\static\CSS\diagnosis.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <img src="..\static\images\Appointment.jpg" alt="Header Image">
+        </div>
+    </header>
+
+    <div class="container">
+        <h1>{{name}}</h1>
+        <form action="/submit_diagnosis" method="POST">
+            <input type="hidden" name="id" value="{{ aid }}">
+            <label for="feedback">Diagnostics:</label>
+            <textarea id="feedback" name="feedback" rows="4" required></textarea>
+            <label for="medicines">Medicines:</label>
+            <textarea id="medicines" name="medicines" rows="4"></textarea>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</body>
+</html>

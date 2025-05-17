@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blood Bank</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='../static/CSS/blood_bank_main_page.css') }}">
+</head>
+
+<body>
+
+    <header>
+        <div class="header-content">
+            <img src="{{ url_for('static', filename='../static/images/solidarity-5030921_1280.png') }}" alt="Header Image" id="Header_img">
+            <h1>Blood Bank</h1>
+        </div>
+    </header>
+
+    <main>
+        <div class="image-container">
+            <div class="donate">
+                <a href="{{ url_for('blood_donate_location') }}">
+                    <img id="Image1" src="{{ url_for('static', filename='../static/images/Donate.webp') }}" alt="Image 1" class="Image_button">
+                </a> 
+                <br>
+                <label>Donate Blood</label>
+            </div>
+            <div class="receive">
+                <a href="{{ url_for('blood_grp') }}">
+                    <img id="Image2" src="{{ url_for('static', filename='../static/images/receive.png') }}" alt="Image 2" class="Image_button">
+                </a>
+                <label id="imgLabel2" for="">Receive Blood</label>
+            </div>
+        </div>
+    </main>
+    
+
+</body>
+
+</html>

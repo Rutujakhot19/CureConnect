@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/dashboard.css') }}">
+</head>
+<body>
+    <header>
+        <div class="logo">Rider App</div>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('user_dashboard') }}" class="active">Dashboard</a></li>
+            </ul>
+        </nav>
+        <div class="user-menu">
+            <span>{{ username }}</span>
+            <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+        </div>
+    </header>
+    
+    <main>
+        <div class="welcome-banner">
+            <h1>Welcome, {{ name }}!</h1>
+            <p>Ready to go somewhere?</p>
+        </div>
+        
+        <!-- Active Ride Banner (hidden by default) -->
+        <div id="active-ride-banner" class="active-ride-banner hidden">
+            <div>
+                <h3 id="ride-status-title">Your ride is coming</h3>
+                <p id="ride-status-details">Driver on the way</p>
+            </div>
+            <button id="check-status-btn">Check Status</button>
+        </div>
+        
+        <div class="dashboard-grid">
+            <div class="card request-ride-card">
+                <h3>Need a ride?</h3>
+                <p>Request a ride to your destination now</p>
+                <button id="request-ride-btn">Request Ride</button>
+            </div>
+            
+            <div class="card">
+                <h3>Recent Activity</h3>
+                <div class="summary-list">
+                    <div class="summary-item">
+                        <span class="label">Total Rides:</span>
+                        <span class="value">{{ ride_history|length if ride_history else 0 }}</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="label">Last Ride:</span>
+                        <span class="value">
+                            {% if ride_history %}
+                                {{ ride_history[0].request_time.strftime('%b %d, %Y') }}
+                            {% else %}
+                                None yet
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="label">Payment Method:</span>
+                        <span class="value">Credit Card (•••• 1234)</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>Your Location</h3>
+                <div class="map-container" id="user-location-map">
+                    <p style="text-align: center; padding-top: 120px;">Map loading...</p>
+                </div>
+                <button id="update-location-btn" style="margin-top: 10px;">Update My Location</button>
+            </div>
+            
+            <div class="card">
+                <h3>Ride History</h3>
+                <div id="ride-history-container">
+                    {% if ride_history %}
+                        {% for ride in ride_history %}
+                            <div class="ride-history-item {{ ride.status }}">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <h4>{{ ride.pickup_location }} → {{ ride.dropoff_location }}</h4>
+                                    <span class="price-tag">${{ "%.2f"|format(ride.fare|float) if ride.fare else "%.2f"|format(ride.estimated_fare|float) }}</span>
+                                </div>
+                                <p>{{ ride.request_time.strftime('%b %d, %Y at %I:%M %p') }}</p>
+                                <p><strong>Status:</strong> 
+                                    <span class="status-label">{{ ride.status|title }}</span>
+                                    {% if ride.driver_name and ride.status != 'rejected' %}
+                                        | <strong>Driver:</strong> {{ ride.driver_name }}
+                                    {% endif %}
+                                </p>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="no-items">No ride history yet</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>Popular Destinations</h3>
+                <ul class="destinations-list">
+                    <li>
+                        <strong>Work</strong> - Office Building, Business District
+                        <button class="quick-book-btn" data-location="Office Building, Business District">Book</button>
+                    </li>
+                    <li>
+                        <strong>Home</strong> - 123 Residential St, Apartment 4B
+                        <button class="quick-book-btn" data-location="123 Residential St, Apartment 4B">Book</button>
+                    </li>
+                    <li>
+                        <strong>Gym</strong> - Fitness Center, Sports Complex
+                        <button class="quick-book-btn" data-location="Fitness Center, Sports Complex">Book</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Booking Form Modal -->
+    <div class="overlay" id="booking-overlay"></div>
+    <div class="booking-form" id="booking-form">
+        <h3>Request a Ride</h3>
+        <form id="ride-request-form">
+            <div class="form-group">
+                <label for="pickup">Pickup Location:</label>
+                <input type="text" id="pickup" name="pickup_location" required>
+                <input type="hidden" id="pickup_lat" name="pickup_lat" value="0">
+                <input type="hidden" id="pickup_lng" name="pickup_lng" value="0">
+            </div>
+            <div class="form-group">
+                <label for="dropoff">Destination:</label>
+                <input type="text" id="dropoff" name="dropoff_location" required>
+                <input type="hidden" id="dropoff_lat" name="dropoff_lat" value="0">
+                <input type="hidden" id="dropoff_lng" name="dropoff_lng" value="0">
+            </div>
+            <div class="form-group">
+                <label for="ride-type">Ride Type:</label>
+                <select id="ride-type" name="ride_type">
+                    <option value="standard">Standard</option>
+                    <option value="premium">Premium</option>
+                    <option value="shared">Shared</option>
+                </select>
+            </div>
+            <div class="buttons">
+                <button type="button" id="cancel-booking">Cancel</button>
+                <button type="submit">Confirm Booking</button>
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        // Display notification function
+        function showNotification(message, isSuccess = true) {
+            const body = document.querySelector('body');
+            const notification = document.createElement('div');
+            notification.className = isSuccess ? 'notification success' : 'notification error';
+            notification.style.position = 'fixed';
+            notification.style.bottom = '20px';
+            notification.style.right = '20px';
+            notification.style.padding = '15px 20px';
+            notification.style.borderRadius = '5px';
+            notification.style.backgroundColor = isSuccess ? '#4CAF50' : '#f44336';
+            notification.style.color = 'white';
+            notification.style.zIndex = '1000';
+            notification.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+            notification.textContent = message;
+            
+            body.appendChild(notification);
+            setTimeout(() => {
+                body.removeChild(notification);
+            }, 5000);
+        }
+        
+        // Show/hide booking form
+        document.getElementById('request-ride-btn').addEventListener('click', function() {
+            document.getElementById('booking-overlay').style.display = 'block';
+            document.getElementById('booking-form').style.display = 'block';
+        });
+        
+        document.getElementById('cancel-booking').addEventListener('click', function() {
+            document.getElementById('booking-overlay').style.display = 'none';
+            document.getElementById('booking-form').style.display = 'none';
+        });
+        
+        // Quick book buttons
+        document.querySelectorAll('.quick-book-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const location = this.getAttribute('data-location');
+                document.getElementById('dropoff').value = location;
+                document.getElementById('booking-overlay').style.display = 'block';
+                document.getElementById('booking-form').style.display = 'block';
+                
+                // Get current location for pickup
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function(position) {
+                        const latitude = position.coords.latitude;
+                        const longitude = position.coords.longitude;
+                        
+                        // Set pickup to current location
+                        document.getElementById('pickup').value = 'Current Location';
+                        document.getElementById('pickup_lat').value = latitude;
+                        document.getElementById('pickup_lng').value = longitude;
+                        
+                        // For demonstration - normally you'd reverse geocode to get the address
+                        fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`)
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.display_name) {
+                                    document.getElementById('pickup').value = data.display_name;
+                                }
+                            })
+                            .catch(error => console.error('Error getting address:', error));
+                    });
+                }
+            });
+        });
+        
+        // Handle form submission
+        document.getElementById('ride-request-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // In a real app, you'd validate coordinates here
+            if (document.getElementById('pickup_lat').value === '0' || document.getElementById('pickup_lng').value === '0') {
+                // For demo purposes, set demo coordinates
+                document.getElementById('pickup_lat').value = '37.7749';
+                document.getElementById('pickup_lng').value = '-122.4194';
+            }
+            
+            if (document.getElementById('dropoff_lat').value === '0' || document.getElementById('dropoff_lng').value === '0') {
+                // For demo purposes, set demo coordinates
+                document.getElementById('dropoff_lat').value = '37.7833';
+                document.getElementById('dropoff_lng').value = '-122.4167';
+            }
+            
+            // Submit the form to the backend
+            const formData = new FormData(this);
+            
+            fetch('/book_ride', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.redirected) {
+                    window.location.href = response.url;
+                } else {
+                    return response.json();
+                }
+            })
+            .then(data => {
+                if (data && data.status === 'error') {
+                    showNotification(data.message, false);
+                } else {
+                    document.getElementById('booking-overlay').style.display = 'none';
+                    document.getElementById('booking-form').style.display = 'none';
+                    showNotification('Ride request sent successfully! Searching for nearby drivers...');
+                    
+                    // Update UI to show active ride
+                    showActiveRideBanner();
+                    
+                    // Reload after a short delay to see updated ride status
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 3000);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('An error occurred while processing your request.', false);
+            });
+        });
+        
+        // Update user location
+        document.getElementById('update-location-btn').addEventListener('click', function() {
+            if (!navigator.geolocation) {
+                showNotification('Geolocation is not supported by your browser', false);
+                return;
+            }
+            
+            showNotification('Getting your current location...', true);
+            
+            navigator.geolocation.getCurrentPosition(function(position) {
+                const latitude = position.coords.latitude;
+                const longitude = position.coords.longitude;
+                
+                // Here you'd update the user's location in the database
+                // For now, just show a notification
+                showNotification('Location updated successfully');
+                
+                // Update map (in a real app you'd have a map displaying the location)
+                const mapContainer = document.getElementById('user-location-map');
+                mapContainer.innerHTML = `
+                    <p style="text-align: center; padding-top: 120px;">
+                        Your location: ${latitude.toFixed(4)}, ${longitude.toFixed(4)}
+                    </p>
+                `;
+            }, function(error) {
+                let errorMessage;
+                switch (error.code) {
+                    case error.PERMISSION_DENIED:
+                        errorMessage = 'Location permission denied';
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        errorMessage = 'Location information is unavailable';
+                        break;
+                    case error.TIMEOUT:
+                        errorMessage = 'Location request timed out';
+                        break;
+                    default:
+                        errorMessage = 'Unknown error occurred';
+                        break;
+                }
+                showNotification(errorMessage, false);
+            });
+        });
+        
+        // Show active ride banner if user has active ride
+        function showActiveRideBanner() {
+            {% if active_ride %}
+                const activeBanner = document.getElementById('active-ride-banner');
+                const statusTitle = document.getElementById('ride-status-title');
+                const statusDetails = document.getElementById('ride-status-details');
+                
+                activeBanner.classList.remove('hidden');
+                
+                {% if active_ride.status == 'pending' %}
+                    statusTitle.textContent = 'Finding your driver...';
+                    statusDetails.textContent = 'We\'re looking for a driver nearby';
+                {% elif active_ride.status == 'accepted' %}
+                    statusTitle.textContent = 'Your ride is on the way!';
+                    statusDetails.textContent = 'Driver: {{ active_ride.driver_name }} | ETA: 5 mins';
+                {% endif %}
+                
+                // Check ride status button
+                document.getElementById('check-status-btn').addEventListener('click', function() {
+                    fetch('/check_ride_status?ride_id={{ active_ride.id }}')
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status === 'success') {
+                                const ride = data.ride;
+                                
+                                if (ride.status === 'pending') {
+                                    showNotification('We\'re still looking for a driver. Please wait.', true);
+                                } else if (ride.status === 'accepted') {
+                                    showNotification(`${ride.driver_name} is on the way to pick you up!`, true);
+                                } else if (ride.status === 'completed') {
+                                    showNotification('Your ride has been completed!', true);
+                                    setTimeout(() => {
+                                        window.location.reload();
+                                    }, 1500);
+                                } else if (ride.status === 'rejected') {
+                                    showNotification('Your ride request was declined. Please try again.', false);
+                                    setTimeout(() => {
+                                        window.location.reload();
+                                    }, 1500);
+                                }
+                            } else {
+                                showNotification('Error checking ride status', false);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            showNotification('An error occurred while checking ride status', false);
+                        });
+                });
+            {% endif %}
+        }
+        
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show active ride banner if there's an active ride
+            showActiveRideBanner();
+            
+            // Initialize map
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+                    
+                    // Normally you'd initialize a map here
+                    const mapContainer = document.getElementById('user-location-map');
+                    mapContainer.innerHTML = `
+                        <p style="text-align: center; padding-top: 120px;">
+                            Your location: ${latitude.toFixed(4)}, ${longitude.toFixed(4)}
+                        </p>
+                    `;
+                }, function(error) {
+                    const mapContainer = document.getElementById('user-location-map');
+                    mapContainer.innerHTML = `
+                        <p style="text-align: center; padding-top: 120px;">
+                            Location access denied. Enable location services to see your position.
+                        </p>
+                    `;
+                });
+            }
+        });
+    </script>
+</body>
+</html>

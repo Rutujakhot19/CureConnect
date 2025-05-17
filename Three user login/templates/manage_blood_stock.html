@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Blood Stock</title>
+</head>
+<body style="margin: 0; padding: 20px; min-height: 100vh; background: linear-gradient(135deg, #6e8efb, #a777e3); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #fff;">
+    <div style="background: rgba(255, 255, 255, 0.95); padding: 40px; border-radius: 15px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); max-width: 500px; width: 90%; margin: 20px auto; animation: fadeIn 1s ease-in-out;">
+        <h2 style="font-size: 2em; margin-bottom: 20px; color: #333; text-transform: uppercase; letter-spacing: 1px; text-align: center;">Manage Blood Stock</h2>
+        <form method="POST" style="display: flex; flex-direction: column; gap: 15px;">
+            <div style="text-align: left;">
+                <label style="color: #333; font-weight: bold;">Select Blood Bank:</label>
+                <select name="blood_bank_name" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 1em; outline: none; transition: border-color 0.3s;" onfocus="this.style.borderColor='#6e8efb';" onblur="this.style.borderColor='#ccc';">
+                    <option value="">-- Select Blood Bank --</option>
+                    {% for blood_bank in blood_banks %}
+                    <option value="{{ blood_bank[0] }}">{{ blood_bank[0] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div style="text-align: left;">
+                <label style="color: #333; font-weight: bold;">Blood Group:</label>
+                <input type="text" name="blood_group" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 1em; outline: none; transition: border-color 0.3s;" onfocus="this.style.borderColor='#6e8efb';" onblur="this.style.borderColor='#ccc';">
+            </div>
+            <div style="text-align: left;">
+                <label style="color: #333; font-weight: bold;">Quantity:</label>
+                <input type="number" name="quantity" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 1em; outline: none; transition: border-color 0.3s;" onfocus="this.style.borderColor='#6e8efb';" onblur="this.style.borderColor='#ccc';">
+            </div>
+            <button name="action" value="add" style="padding: 12px; background: #6e8efb; color: #fff; border: none; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; margin-top: 20px; transition: background 0.3s, transform 0.3s;">Add/Update</button>
+        </form>
+    </div>
+
+    <style>
+        button:hover {
+            background: #a777e3 !important;
+            transform: translateY(-3px);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            h2 { font-size: 1.6em; }
+            div { padding: 20px; }
+            input, select, button { font-size: 0.9em; }
+        }
+    </style>
+</body>
+</html>
