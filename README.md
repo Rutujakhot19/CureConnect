@@ -44,12 +44,11 @@ pip install -r requirements.txt
 
 ### Setup database (MySQL):
 ```
-CREATE DATABASE cureconnect;
+mysql -u username -p doctors_db < doctors_db.sql
 ```
 
 ### Run migrations & start the backend:
 ```
-flask db upgrade
 flask run
 ```
 
