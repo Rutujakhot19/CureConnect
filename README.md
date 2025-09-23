@@ -68,13 +68,13 @@ http://127.0.0.1:5000
 
 ## 📸 Screenshots
 
-### Appointment Booking Interface
+- ### Appointment Booking Interface
 
-### Bed Availability Dashboard
+- ### Bed Availability Dashboard
 
-### Blood Bank & Donation System
+- ### Blood Bank & Donation System
 
-### Ambulance Request System
+- ### Ambulance Request System
 
 
 ## 🔒 Security & Compliance
