@@ -1,4 +1,4 @@
-#CureConnect – Integrated Hospital Management System
+# CureConnect – Integrated Hospital Management System
 
 CureConnect is a full-stack Integrated Hospital Management System designed to streamline hospital operations and improve patient care. It integrates critical healthcare functions like appointment booking, blood bank management, bed availability, doctor ratings, patient history, and ambulance services into a single, user-friendly platform.
 
@@ -77,7 +77,7 @@ http://127.0.0.1:5000
 ### Ambulance Request System
 
 
-##🔒 Security & Compliance
+## 🔒 Security & Compliance
 - Role-based access control (Admin, Doctor, Patient)
 - Encrypted data storage 
--Regular database backups
+- Regular database backups
