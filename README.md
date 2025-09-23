@@ -47,14 +47,24 @@ pip install -r requirements.txt
 mysql -u username -p doctors_db < doctors_db.sql
 ```
 
-### Run migrations & start the backend:
+### Run & start the backend:
 ```
-flask run
+python "Three user login\app.py" && python "User App\app.py" && python "doctor project\doctor_app.py" && python "driver app\driver_app.py"
 ```
 
 ### Open the app in browser:
 ```
-http://127.0.0.1:5000
+#Three User Login
+http://127.0.0.1:5010
+
+#User App
+http://127.0.0.1:4000 
+
+#Doctor Project
+http://127.0.0.1:8100
+
+#Driver App
+http://127.0.0.1:8010
 ```
 
 ## 📊 System Architecture
