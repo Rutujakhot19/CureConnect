@@ -16,15 +16,16 @@
     
     <div class="container" id="hospitalsList">
         {% for hospital in hospitals %}
-                <h1>{{ hospital[0] }}</h1>
-                <h2>Doctor Name: {{ hospital[1] }}</h2>
-                <h3>Diagnostics: {{ hospital[2] }}</h3>
-                <h3>Medicines: {{ hospital[3] }}</h3>
+            <h1>{{ hospital[1] }}</h1>
+            <h2>Doctor Name: {{ hospital[2] }}</h2>
+            <h3>Diagnostics: {{ hospital[3] }}</h3>
+            <h3>Medicines: {{ hospital[4] }}</h3>
         {% endfor %}
         
-        <!-- Button for rating and feedback -->
+        <!-- Button for rating and feedback with patient_history_id -->
         <div class="button-container">
-            <a href="{{ url_for('rating_and_feedback') }}" class="btn">Rating and Feedback</a>
+            <a href="{{ url_for('rating_and_feedback', patient_history_id=patient_history_id) }}" class="btn">Rating and Feedback</a>
         </div>
-    </body>
-    </html>
+    </div>
+</body>
+</html>

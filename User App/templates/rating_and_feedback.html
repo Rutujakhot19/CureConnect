@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rating</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='../static/CSS/rating_and_feedback.css') }}">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <img src="{{ url_for('static', filename='../static/images/doc.avif') }}" alt="Header Image">
+        </div>
+    </header>
+
+    <div class="container">
+        <h1>{{ hospital_name if hospital_name else 'General Hospital' }}</h1>
+        <h1>Doctor Name: {{ doctor_name if doctor_name else 'Dr. Mona' }}</h1>
+       
+        {% if error %}
+            <div class="error-message" style="color: red; margin-bottom: 20px;">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <form id="ratingForm" action="{{ url_for('submit_rating') }}" method="POST">
+            <input type="hidden" name="doctor_id" value="{{ doctor_id }}">
+            <input type="hidden" name="hospital_id" value="{{ hospital_id }}">
+            <input type="hidden" name="patient_history_id" value="{{ patient_history_id }}">
+            
+            <div class="rating-container">
+                <h3>Rate for Doctor</h3>
+                <div class="rating-stars">
+                    <input type="radio" id="star5" name="rating" value="5">
+                    <label for="star5" title="5 stars">★</label>
+            
+                    <input type="radio" id="star4" name="rating" value="4">
+                    <label for="star4" title="4 stars">★</label>
+            
+                    <input type="radio" id="star3" name="rating" value="3">
+                    <label for="star3" title="3 stars">★</label>
+            
+                    <input type="radio" id="star2" name="rating" value="2">
+                    <label for="star2" title="2 stars">★</label>
+            
+                    <input type="radio" id="star1" name="rating" value="1">
+                    <label for="star1" title="1 star">★</label>
+                </div>
+            </div>
+            
+            <textarea id="feedback" name="feedback" rows="4" placeholder="Write your feedback" required></textarea>
+            
+            <div class="button-container">
+                <button type="submit" class="btn">Submit</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Visual feedback for star rating
+        const stars = document.querySelectorAll('.rating-stars input[type="radio"]');
+        const labels = document.querySelectorAll('.rating-stars label');
+        
+        labels.forEach((label, index) => {
+            label.addEventListener('mouseover', () => {
+                highlightStars(5 - index);
+            });
+            
+            label.addEventListener('mouseout', () => {
+                const checkedStar = document.querySelector('.rating-stars input[type="radio"]:checked');
+                if (checkedStar) {
+                    highlightStars(parseInt(checkedStar.value));
+                } else {
+                    highlightStars(0);
+                }
+            });
+            
+            label.addEventListener('click', () => {
+                highlightStars(5 - index);
+            });
+        });
+        
+        function highlightStars(rating) {
+            labels.forEach((label, index) => {
+                if (5 - index <= rating) {
+                    label.style.color = '#ffc107';
+                } else {
+                    label.style.color = '#ddd';
+                }
+            });
+        }
+        
+        // Form validation
+        document.getElementById('ratingForm').addEventListener('submit', function(e) {
+            const rating = document.querySelector('input[name="rating"]:checked');
+            if (!rating) {
+                e.preventDefault();
+                alert('Please select a rating before submitting.');
+                return false;
+            }
+        });
+    </script>
+</body>
+</html>

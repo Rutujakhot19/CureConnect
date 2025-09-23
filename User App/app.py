@@ -449,7 +449,7 @@ def hospital_list_rating():
 def Doctor_info(id):
     cursor = mysql.connection.cursor()
     cursor.execute('''
-        SELECT  hospitals.name,doctors_table.name,patient_history.diagnostis,patient_history.medicines
+        SELECT  patient_history.id, hospitals.name,doctors_table.name,patient_history.diagnostis,patient_history.medicines, patient_history.doctor_id, patient_history.hospital_id
         FROM patient_history
         INNER JOIN hospitals ON hospitals.id = patient_history.hospital_id
         INNER JOIN doctors_table ON doctors_table.id = patient_history.doctor_id
@@ -457,13 +457,86 @@ def Doctor_info(id):
     ''', (id,))
     patient_history = cursor.fetchall()
     cursor.close()
-    return render_template('Doctor_info.html',hospitals=patient_history)
+    return render_template('Doctor_info.html', hospitals=patient_history, patient_history_id=id)
 
 
-@app.route('/rating-and-feedback')
-def rating_and_feedback():
-    return render_template('rating_and_feedback.html')
+@app.route('/rating-and-feedback/<int:patient_history_id>')
+def rating_and_feedback(patient_history_id):
+    cursor = mysql.connection.cursor()
+    cursor.execute('''
+        SELECT  hospitals.name, doctors_table.name, patient_history.doctor_id, patient_history.hospital_id
+        FROM patient_history
+        INNER JOIN hospitals ON hospitals.id = patient_history.hospital_id
+        INNER JOIN doctors_table ON doctors_table.id = patient_history.doctor_id
+        WHERE patient_history.id=%s AND patient_history.rating_given=0;
+    ''', (patient_history_id,))
+    patient_info = cursor.fetchone()
+    cursor.close()
+    
+    if patient_info:
+        return render_template('rating_and_feedback.html', 
+                             hospital_name=patient_info[0],
+                             doctor_name=patient_info[1],
+                             doctor_id=patient_info[2],
+                             hospital_id=patient_info[3],
+                             patient_history_id=patient_history_id)
+    else:
+        return render_template('error.html', message="Patient record not found"), 404
 
+@app.route('/submit-rating', methods=['POST'])
+def submit_rating():
+        user_id = session.get('user_id')
+        if not user_id:
+            return redirect(url_for('login'))
+        
+        rating_g = request.form.get('rating')
+        doctor_id = request.form.get('doctor_id')
+        patient_history_id = request.form.get('patient_history_id')
+        
+        if not rating_g:
+            return render_template('rating_and_feedback.html', 
+                                 error="Please select a rating before submitting.",
+                                 patient_history_id=patient_history_id)
+        
+        cursor = mysql.connection.cursor()
+        
+        cursor.execute('''
+            SELECT rating,rating_count FROM doctors_table 
+            WHERE id = %s
+        ''', (doctor_id,))
+        rating = cursor.fetchone()
+
+        if rating:
+            if int(rating[1])>0:
+                total=round(int(rating[1])*float(rating[0]), 1)
+                rating_new=(total+float(rating_g))/(int(rating[1])+1)
+                print(rating_new)
+                cursor.execute('''
+                    UPDATE doctors_table
+                    SET rating = %s, rating_count=%s
+                    WHERE id = %s
+                ''', (rating_new, (int(rating[1])+1),doctor_id,))
+                cursor.execute('''
+                    UPDATE patient_history
+                    SET rating_given=1
+                    WHERE id = %s
+                ''', (patient_history_id,))
+            else:
+                cursor.execute('''
+                    UPDATE doctors_table
+                    SET rating = %s, rating_count=%s
+                    WHERE id = %s
+                ''', (rating_g, 1,doctor_id,))
+                cursor.execute('''
+                    UPDATE patient_history
+                    SET rating_given=1
+                    WHERE id = %s
+                ''', (patient_history_id,))
+        mysql.connection.commit()
+        cursor.close()
+        
+        return render_template('rating_success.html', message="Thank you for your feedback!")
+        
 
 @app.route('/Hospital-list-patient-history')
 def Hospital_list_patient_history():
