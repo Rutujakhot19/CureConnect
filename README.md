@@ -2,7 +2,7 @@
 
 CureConnect is a full-stack Integrated Hospital Management System designed to streamline hospital operations and improve patient care. It integrates critical healthcare functions like appointment booking, blood bank management, bed availability, doctor ratings, patient history, and ambulance services into a single, user-friendly platform.
 
-## 🚀 Features
+##  Features
 - Patient Appointment Booking – Patients can schedule, reschedule, and cancel appointments online.
 - Blood Bank Management – Track donations, manage stock, and ensure real-time availability.
 - Bed Availability Monitoring – View and update real-time bed occupancy across wards (ICU, General, Private).
@@ -10,14 +10,14 @@ CureConnect is a full-stack Integrated Hospital Management System designed to st
 - Patient History Management – Secure digital repository of patient records for better diagnosis and continuity of care.
 - Ambulance Dispatch System – Ride-sharing style ambulance requests with GPS tracking and optimized response time.
 
-## 🛠️ Tech Stack
+##  Tech Stack
 - Frontend: HTML, CSS, JavaScript (with responsive design)
 - Backend: Flask (Python)
 - Database: MySQL 
 - APIs: RESTful APIs for communication between modules
 - Hosting: Cloud-ready (AWS / Azure)
 
-## 📂 Project Structure
+##  Project Structure
 ```
 CureConnect/
   │── backend/          # Flask backend with APIs
@@ -27,7 +27,7 @@ CureConnect/
   │── README.md         # Project overview
 ```
 
-## ⚙️ Installation & Setup
+##  Installation & Setup
 
 ### Clone the repository:
 ```
@@ -67,7 +67,7 @@ http://127.0.0.1:8100
 http://127.0.0.1:8010
 ```
 
-## 📊 System Architecture
+## System Architecture
 ### Three-tier architecture:
 - Presentation Layer: User-friendly web interface (patients, doctors, admins)
 
@@ -75,18 +75,8 @@ http://127.0.0.1:8010
 
 - Database Layer: Secure medical records, appointments, inventory
 
-## 📸 Screenshots
 
-- ### Appointment Booking Interface
-
-- ### Bed Availability Dashboard
-
-- ### Blood Bank & Donation System
-
-- ### Ambulance Request System
-
-
-## 🔒 Security & Compliance
+##  Security & Compliance
 - Role-based access control (Admin, Doctor, Patient)
 - Encrypted data storage 
 - Regular database backups
